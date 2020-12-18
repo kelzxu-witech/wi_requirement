@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="requirement_assets_backend" name="Requirement Asset" inherit_id="web.assets_frontend">
+        <xpath expr="script[last()]" position="after">
+            <script type="text/javascript" src="/wi_requirement/static/src/js/requirement_portal_sidebar.js"></script>
+        </xpath>
+    </template>
+
+</odoo>

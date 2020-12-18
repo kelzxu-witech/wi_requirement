@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="email_template_edi_requirement" model="mail.template">
+            <field name="name">User Requirement: Send by email</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="subject">${object.company_id.name} User Requirement (Ref ${object.name or 'n/a' })</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        % set doc_name = 'User Requirement'
+        Hello,
+        <br/><br/>
+        Your
+            ${doc_name} <strong>${object.name}</strong>
+            % if object.origin:
+                (with reference: ${object.origin} )
+            % endif
+            is ready for review.
+        <br/><br/>
+        Do not hesitate to contact us if you have any questions.
+        <br/>
+    </p>
+</div>
+            </field>
+            <field name="report_template" ref="action_report_user_requirement_template"/>
+            <field name="report_name">${(object.name or '').replace('/','_')}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="mail_template_requirement_confirmation" model="mail.template">
+            <field name="name">User Requirement: Confirmation Email</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="subject">${object.company_id.name} User Requirement (Ref ${object.name or 'n/a' })</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 12px;">
+        Hello,
+        <br/><br/>
+        % set transaction = object.get_portal_last_transaction()
+        Your Requirement <strong>${object.name}</strong> 
+        % if object.state == 'sale' or (transaction and transaction.state in ('done', 'authorized')) :
+            has been confirmed.<br/>
+            Thank you for your trust!
+        % else :
+            is pending. It will be confirmed when the payment is received.
+            % if object.reference:
+                Your payment reference is <strong>${object.reference}</strong>.
+            % endif
+        % endif
+        <br/><br/>
+        Do not hesitate to contact us if you have any questions.
+        <br/><br/>
+    </p>
+</div>
+</field>
+            <field name="report_template" ref="action_report_user_requirement_template"/>
+            <field name="report_name">${(object.name or '').replace('/','_')}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- set default order confirmation template -->
+        <record id="default_req_confirmation_template" model="ir.config_parameter">
+            <field name="key">sale.default_req_confirmation_template"</field>
+            <field name="value" ref="mail_template_requirement_confirmation"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_user_requirement_document">
+        <t t-call="web.external_layout">
+            <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
+            <div class="page">
+                <div class="oe_structure"/>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h3 class="mt16">
+                            <U><strong>USER REQUIREMENT</strong></U>
+                        </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h4 class="mt16">
+                            <U><strong><span t-field="doc.name"/></strong></U>
+                        </h4>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-12 text-right">
+                        <h5>
+                            <span t-field="doc.company_id.city" style="text-transform: capitalize;"/>,
+                            <span t-field="doc.date_order" t-options='{"format": "dd MMMM yyyy"}'/>
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="row mt32">
+                    <div class="col-2">
+                        <h5><strong>Lampiran</strong></h5>
+                    </div>
+                    <div class="col-auto mw-100">
+                        <span style="font-size: 20px;">
+                            : <span t-field="doc.attachment"/>
+                        </span>
+                    </div>
+                </div>
+                <div class="row mb32">
+                    <div class="col-2">
+                        <h5><strong>Perihal</strong></h5>
+                    </div>
+                    <div class="col-auto mw-100">
+                        <span style="font-size: 20px;" t-if="doc.sale_type == 'requirements'">: USER REQUIREMENT</span>
+                        <span style="font-size: 20px;"  t-if="not doc.sale_type == 'requirements'">: Orders</span>
+                    </div>
+                </div>
+
+                <div class="row mb32">
+                    <div class="col-12">
+                        <p class="m-0" style="font-size: 20px;">Kepada Yth,</p>
+                        <p class="m-0" style="font-size: 20px;"><span  t-if="doc.partner_id.title is not False" t-field="doc.partner_id.title.shortcut"/> <span t-field="doc.partner_id.name"/></p>
+                        <p class="m-0 mt-0" style="font-size: 20px;">di tempat</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <p class="m-0" style="font-size: 20px;">Dengan Hormat,</p>
+                        <p class="m-0" style="text-indent: 3em;font-size: 20px;">Dengan ini kami menerangkan bahwa telah diterima permintaan fitur yang mencakup :</p>
+                    </div>
+                </div>
+
+                <!-- Is there a discount on at least one line? -->
+                <t t-set="display_discount" t-value="any([l.discount for l in doc.order_line])"/>
+
+                <table class="table table-sm o_main_table">
+                    <thead>
+                        <tr>
+                            <th name="th_module" width="200px" class="text-center" style="font-size: 20px;">Module</th>
+                            <th name="th_user" width="200px" class="text-center" style="font-size: 20px;">User</th>
+                            <th name="th_description" class="text-center" style="font-size: 20px;">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <t t-foreach="doc.order_line" t-as="line">
+                            <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
+                                <t>
+                                    <td name="td_module"><span style="font-size: 20px;" t-field="line.product_id.name"/></td>
+                                    <td name="td_user"><span style="font-size: 20px;" t-field="line.user.name"/></td>
+                                    <td name="td_name"><span style="font-size: 20px;" t-field="line.name"/></td>
+                                </t>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <div class="row mt-3 mb-3">
+                    <div class="col-12">
+                        <p class="m-0" style="text-indent: 3em;font-size: 20px;">Demikian surat keterangan ini dibuat untuk dipergunakan sebagaimana mestinya.</p>
+                    </div>
+                </div>
+
+                <div class="row mt32" name="signature">
+                    <div class="col-4 text-center">
+                        <strong>Diterima Oleh</strong>
+                        <img t-if="doc.pic_signature" t-att-src="image_data_uri(doc.pic_signature)" style="max-height: 3cm; max-width: 6cm;"/>
+                        <p t-if="doc.pic_signature" t-field="doc.user_id.name"/>
+                        <p t-if="not doc.pic_signature" style="margin-top: 75px;" t-field="doc.user_id.name"/>
+                    </div>
+                    <div class="col-4 text-center">
+                        <strong>Diketahui Oleh</strong>
+                        <img t-if="doc.Assignees_signature" t-att-src="image_data_uri(doc.Assignees_signature)" style="max-height: 3cm; max-width: 6cm;"/>
+                        <p t-if="doc.Assignees_signature" t-field="doc.Assignees_user.name"/>
+                        <p t-if="not doc.Assignees_signature" style="margin-top: 75px;" t-field="doc.Assignees_user.name"/>
+                    </div>
+                    <div class="col-4 text-center">
+                        <strong>Disetujui Oleh</strong>
+                        <img t-if="doc.signature" t-att-src="image_data_uri(doc.signature)" style="max-height: 3cm; max-width: 6cm;"/>
+                        <p t-if="doc.signature" t-field="doc.partner_id.name"/>
+                        <p t-if="not doc.signature" style="margin-top: 75px;" t-field="doc.partner_id.name"/>
+                    </div>
+                </div>
+
+                <div class="oe_structure"/>
+
+                <p t-field="doc.note" />
+            </div>
+        </t>
+    </template>
+
+    <template id="report_user_requirement">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="wi_requirement.report_user_requirement_document" t-lang="doc.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+</odoo>

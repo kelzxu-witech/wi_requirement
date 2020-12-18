@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report 
+            id="action_report_user_requirement_template"
+            model="sale.order" 
+            string="User Requirement"
+            report_type="qweb-pdf"
+            name="wi_requirement.report_user_requirement"
+            file="wi_requirement.report_user_requirement" 
+            print_report_name="(object.state in ('draft', 'sent') and 'User Requirement - %s' % (object.name)) or 'User Requirement - %s' % (object.name)"
+        />
+    </data>
+</odoo>
