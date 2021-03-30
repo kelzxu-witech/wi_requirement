@@ -7,7 +7,7 @@
     'website': "http://witech.co.id",
     'category': 'Sales/Sales',
     'version': '0.1',
-    'depends': ['sale','sale_management','portal'],
+    'depends': ['sale','portal'],
     'data': [
         # 'views/sequence.xml',
         'views/web_assets.xml',
